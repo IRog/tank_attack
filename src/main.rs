@@ -48,7 +48,7 @@ impl SimpleState for TankAttack {
         };
 
         let mut trans = Transform::default();
-        trans.set_xyz(-5.0, 0.0, 0.0);
+        trans.set_xyz(0.0, 0.0, 0.0);
         trans.set_scale(2.0, 2.0, 2.0);
 
         world
@@ -86,9 +86,10 @@ fn main() -> amethyst::Result<()> {
 
 fn initialise_camera(world: &mut World) {
     let mut transform = Transform::default();
-    transform.set_xyz(0.0, -20.0, 1.0);
-    transform.rotate_local(Vector3::x_axis(), 1.3257521);
-
+    transform.set_xyz(0.0, 12.5, 25.0);
+    //transform.rotate_global(Vector3::x_axis(), 1.5708 * -1.50);
+    //transform.rotate_local(Vector3::y_axis(), 1.5708 * -0.1);
+//https://github.com/amethyst/ludumdare42/blob/master/amethyst/examples/asset_loading/main.rs
     world
         .create_entity()
         .with(Camera::from(Projection::perspective(
