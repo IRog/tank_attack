@@ -17,6 +17,8 @@ fn main() -> amethyst::Result<()> {
 
     let path = format!("{}/resources/display_config.ron", application_root_dir());
     let config = DisplayConfig::load(&path);
+    // let bindings_path = format!("{}/resources/input.ron", application_root_dir());
+    // let input_bundle = InputBundle::<String, String>::new().with_bindings_from_file(bindings_path)?;
 
     let pipe = Pipeline::build().with_stage(
         Stage::with_backbuffer()

@@ -5,24 +5,13 @@ Prefab (
         (
             data: (
                 light: (
-                    ambient_color: (Rgba(0.01, 0.01, 0.01, 1.0)),
+                    ambient_color: (Rgba(1.0, 1.0, 1.0, 1.0)),
                     light: Point((
-                        intensity: 3.0,
+                        intensity: 10.0,
                         color: (1.0, 1.0, 1.0, 1.0),
-                        radius: 5.0,
+                        radius: 100.0,
                     )),
                 ),
-            ),
-        ),
-        (
-            data: (
-                graphics: (
-                    mesh: Shape((shape: Sphere(32, 32),)),
-                    material: (
-                        albedo: Data(Rgba((0.0, 0.0, 1.0, 1.0,), (channel: Srgb),)),
-                    ),
-                ),
-                transform: (),
             ),
         ),
     ],

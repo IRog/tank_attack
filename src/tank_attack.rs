@@ -48,8 +48,9 @@ impl SimpleState for TankAttack {
 
 fn initialise_camera(world: &mut World) {
     let mut transform = Transform::default();
-    transform.set_xyz(0.0, 10.0, 10.0);
-    // transform.rotate_global(Vector3::x_axis(), 0.87 * -1.0);
+    transform.set_xyz(0.0, 13.0, -10.0);
+    transform.rotate_global(Vector3::x_axis(), 0.67 * -1.0);
+    transform.rotate_global(Vector3::y_axis(), 3.14159);
 
     world
         .create_entity()
@@ -75,9 +76,9 @@ fn initialize_tank(world: &mut World) {
             &mut progress,
             &mesh_storage,
         );
-        let albedo = loader.load_from_data([0.0, 0.0, 1.0, 0.0].into(), (), textures);
+        // let albedo = loader.load_from_data([0.5, 0.5, 0.5, 0.5].into(), (), textures);
         let mat = Material {
-            albedo,
+            textures,
             ..mat_defaults.0.clone()
         };
 
@@ -100,32 +101,3 @@ fn initialize_tank(world: &mut World) {
         .with(prefab_handle)
         .build();
 }
-
-// fn initialize_paddles(world: &mut World, sprite_sheet: SpriteSheetHandle) {
-//     let mut left_transform = Transform::default();
-//     let mut right_transform = Transform::default();
-//     let y = ARENA_HEIGHT / 2.0;
-
-//     left_transform.set_xyz(PADDLE_WIDTH * 0.5, y, 0.0);
-//     right_transform.set_xyz(ARENA_WIDTH - PADDLE_WIDTH * 0.5, y, 0.0);
-
-//     let sprite_render = SpriteRender {
-//         sprite_sheet: sprite_sheet.clone(),
-//         sprite_number: 0,
-//     };
-
-//     world
-//         .create_entity()
-//         .with(sprite_render.clone())
-//         .with(Paddle::new(Side::Left))
-//         .with(left_transform)
-//         .build();
-
-//     world
-//         .create_entity()
-//         .with(sprite_render.clone())
-//         .with(Flipped::Horizontal)
-//         .with(Paddle::new(Side::Right))
-//         .with(right_transform)
-//         .build();
-// }
