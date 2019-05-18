@@ -1,7 +1,8 @@
 extern crate amethyst;
 
+use amethyst::utils::scene::BasicScenePrefab;
 use amethyst::{
-    assets::{Loader, ProgressCounter},
+    assets::{Loader, PrefabLoader, PrefabLoaderSystem, ProgressCounter, RonFormat},
     core::{nalgebra::Vector3, Transform, TransformBundle},
     input::InputBundle,
     prelude::*,
@@ -14,9 +15,10 @@ use amethyst::{
 
 struct TankAttack;
 
+type MyPrefabData = BasicScenePrefab<Vec<PosNormTex>>;
+
 impl SimpleState for TankAttack {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
-        println!("orion is cute");
         let StateData { world, .. } = data;
         world.add_resource(0usize);
 
@@ -47,6 +49,10 @@ impl SimpleState for TankAttack {
             (tank, mat)
         };
 
+        let prefab_handle = world.exec(|loader: PrefabLoader<MyPrefabData>| {
+            loader.load("resources/prefab.ron", RonFormat, (), ())
+        });
+
         let mut trans = Transform::default();
         trans.set_xyz(0.0, 0.0, 0.0);
         trans.set_scale(2.0, 2.0, 2.0);
@@ -56,6 +62,7 @@ impl SimpleState for TankAttack {
             .with(trans)
             .with(tank)
             .with(mtl)
+            .with(prefab_handle)
             .build();
     }
 }
@@ -73,6 +80,7 @@ fn main() -> amethyst::Result<()> {
     );
 
     let game_data = GameDataBuilder::default()
+        .with(PrefabLoaderSystem::<MyPrefabData>::default(), "", &[])
         .with_bundle(InputBundle::<String, String>::new())?
         .with_bundle(TransformBundle::new())?
         .with_bundle(RenderBundle::new(pipe, Some(config)))?;
@@ -86,16 +94,12 @@ fn main() -> amethyst::Result<()> {
 
 fn initialise_camera(world: &mut World) {
     let mut transform = Transform::default();
-    transform.set_xyz(0.0, 12.5, 25.0);
-    //transform.rotate_global(Vector3::x_axis(), 1.5708 * -1.50);
-    //transform.rotate_local(Vector3::y_axis(), 1.5708 * -0.1);
-//https://github.com/amethyst/ludumdare42/blob/master/amethyst/examples/asset_loading/main.rs
+    transform.set_xyz(0.0, 10.0, 10.0);
+    // transform.rotate_global(Vector3::x_axis(), 0.87 * -1.0);
+
     world
         .create_entity()
-        .with(Camera::from(Projection::perspective(
-            1.0,
-            std::f32::consts::FRAC_PI_3,
-        )))
+        .with(Camera::from(Projection::perspective(1.309, 2.0)))
         .with(transform)
         .build();
 }
