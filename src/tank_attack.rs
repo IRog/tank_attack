@@ -12,7 +12,6 @@ pub struct TankAttack;
 impl SimpleState for TankAttack {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let StateData { world, .. } = data;
-        world.add_resource(0usize);
 
         initialise_camera(world);
         initialize_tank(world);
@@ -38,7 +37,7 @@ fn initialize_tank(world: &mut World) {
         let mut progress = ProgressCounter::default();
         let mesh_storage = world.read_resource();
 
-        loader.load("assets/puffy.gltf", GltfSceneFormat, GltfSceneOptions::default(), &mut progress, &mesh_storage)
+        loader.load("assets/turret3.glb", GltfSceneFormat, GltfSceneOptions::default(), &mut progress, &mesh_storage)
     };
 
 
