@@ -1,9 +1,10 @@
 use amethyst::utils::scene::BasicScenePrefab;
+use amethyst_gltf::{GltfSceneFormat, GltfSceneOptions};
 use amethyst::{
     assets::{Loader, PrefabLoader, ProgressCounter, RonFormat},
     core::{nalgebra::Vector3, Transform},
     prelude::*,
-    renderer::{Camera, Material, MaterialDefaults, ObjFormat, PosNormTex, Projection},
+    renderer::{Camera, PosNormTex, Projection},
 };
 
 pub struct TankAttack;
@@ -39,7 +40,6 @@ pub type MyPrefabData = BasicScenePrefab<Vec<PosNormTex>>;
 impl SimpleState for TankAttack {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let StateData { world, .. } = data;
-        // world.add_resource(0usize);
 
         initialise_camera(world);
         initialize_tank(world);
@@ -48,7 +48,7 @@ impl SimpleState for TankAttack {
 
 fn initialise_camera(world: &mut World) {
     let mut transform = Transform::default();
-    transform.set_xyz(0.0, 13.0, -10.0);
+    transform.set_xyz(0.0, 7.0, -5.0);
     transform.rotate_global(Vector3::x_axis(), 0.67 * -1.0);
     transform.rotate_global(Vector3::y_axis(), 3.14159);
 
@@ -60,24 +60,12 @@ fn initialise_camera(world: &mut World) {
 }
 
 fn initialize_tank(world: &mut World) {
-    let mut progress = ProgressCounter::default();
-
-    let (tank, mtl) = {
-        let mat_defaults = world.read_resource::<MaterialDefaults>();
+    let asset = {
         let loader = world.read_resource::<Loader>();
+        let mut progress = ProgressCounter::default();
         let mesh_storage = world.read_resource();
-        let tank = loader.load(
-            "assets/turret3.obj",
-            ObjFormat,
-            (),
-            &mut progress,
-            &mesh_storage,
-        );
-        let mat = Material {
-            ..mat_defaults.0.clone()
-        };
 
-        (tank, mat)
+        loader.load("assets/turret3.glb", GltfSceneFormat, GltfSceneOptions::default(), &mut progress, &mesh_storage)
     };
 
     let prefab_handle = world.exec(|loader: PrefabLoader<MyPrefabData>| {
@@ -91,8 +79,7 @@ fn initialize_tank(world: &mut World) {
     world
         .create_entity()
         .with(trans)
-        .with(tank)
-        .with(mtl)
+        .with(asset)
         .with(prefab_handle)
         .build();
 }

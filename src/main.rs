@@ -8,9 +8,10 @@ use amethyst::{
     core::TransformBundle,
     input::InputBundle,
     prelude::*,
-    renderer::{DisplayConfig, DrawShaded, Pipeline, PosNormTex, RenderBundle, Stage},
+    renderer::{DisplayConfig, DrawShadedSeparate, Pipeline, RenderBundle, Stage},
     utils::application_root_dir,
 };
+use amethyst_gltf::{GltfSceneLoaderSystem};
 
 fn main() -> amethyst::Result<()> {
     amethyst::start_logger(Default::default());
@@ -23,11 +24,16 @@ fn main() -> amethyst::Result<()> {
     let pipe = Pipeline::build().with_stage(
         Stage::with_backbuffer()
             .clear_target([0.0, 0.0, 0.0, 1.0], 1.0)
-            .with_pass(DrawShaded::<PosNormTex>::new()),
+            .with_pass(DrawShadedSeparate::new()),
     );
 
     let game_data = GameDataBuilder::default()
-        .with(PrefabLoaderSystem::<MyPrefabData>::default(), "", &[])
+        .with(PrefabLoaderSystem::<MyPrefabData>::default(), "scene_loader", &[])
+        .with(
+            GltfSceneLoaderSystem::default(),
+            "",
+            &["scene_loader"], // This is important so that entity instantiation is performed in a single frame.
+        )
         .with_bundle(InputBundle::<String, String>::new())?
         .with_bundle(TransformBundle::new())?
         .with_bundle(RenderBundle::new(pipe, Some(config)))?;
