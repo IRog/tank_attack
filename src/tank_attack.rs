@@ -67,7 +67,7 @@ fn initialize_tank(world: &mut World) {
         let loader = world.read_resource::<Loader>();
 
         let mesh_storage = world.read_resource();
-        let textures = &world.read_resource();
+        // let textures = &world.read_resource();
 
         let tank = loader.load(
             "assets/turret3.obj",
@@ -76,9 +76,8 @@ fn initialize_tank(world: &mut World) {
             &mut progress,
             &mesh_storage,
         );
-        let albedo = loader.load_from_data([0.5, 0.5, 0.5, 0.5].into(), (), textures);
+        // let albedo = loader.load_from_data([0.5, 0.5, 0.5, 0.5].into(), (), textures);
         let mat = Material {
-            albedo,
             ..mat_defaults.0.clone()
         };
 
