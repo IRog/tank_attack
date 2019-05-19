@@ -1,8 +1,10 @@
 extern crate amethyst;
 mod tank_attack;
 
+use crate::tank_attack::MyPrefabData;
 use crate::tank_attack::TankAttack;
 use amethyst::{
+    assets::PrefabLoaderSystem,
     core::TransformBundle,
     prelude::*,
     renderer::{DisplayConfig, DrawShadedSeparate, Pipeline, RenderBundle, Stage},
@@ -23,10 +25,11 @@ fn main() -> amethyst::Result<()> {
     );
 
     let game_data = GameDataBuilder::default()
+        .with(PrefabLoaderSystem::<MyPrefabData>::default(), "scene_loader", &[])
         .with(
             GltfSceneLoaderSystem::default(),
             "",
-            &[], // This is important so that entity instantiation is performed in a single frame.
+            &["scene_loader"], // This is important so that entity instantiation is performed in a single frame.
         )
         .with_bundle(TransformBundle::new())?
         .with_bundle(RenderBundle::new(pipe, Some(config)))?;

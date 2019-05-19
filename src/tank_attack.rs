@@ -1,13 +1,14 @@
+use amethyst::utils::scene::BasicScenePrefab;
 use amethyst_gltf::{GltfSceneFormat, GltfSceneOptions};
-
 use amethyst::{
-    assets::{Loader, ProgressCounter},
+    assets::{Loader, PrefabLoader, ProgressCounter, RonFormat},
     core::{nalgebra::Vector3, Transform},
     prelude::*,
-    renderer::{Camera, Projection},
+    renderer::{Camera, PosNormTex, Projection},
 };
 
 pub struct TankAttack;
+pub type MyPrefabData = BasicScenePrefab<Vec<PosNormTex>>;
 
 impl SimpleState for TankAttack {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
@@ -40,6 +41,10 @@ fn initialize_tank(world: &mut World) {
         loader.load("assets/turret3.glb", GltfSceneFormat, GltfSceneOptions::default(), &mut progress, &mesh_storage)
     };
 
+    let prefab_handle = world.exec(|loader: PrefabLoader<MyPrefabData>| {
+        loader.load("resources/prefab.ron", RonFormat, (), ())
+    });
+
 
     let mut trans = Transform::default();
     trans.set_xyz(0.0, 0.0, 0.0);
@@ -49,5 +54,6 @@ fn initialize_tank(world: &mut World) {
         .create_entity()
         .with(trans)
         .with(asset)
+        .with(prefab_handle)
         .build();
 }
