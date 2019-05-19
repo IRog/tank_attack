@@ -11,6 +11,7 @@ use amethyst::{
     renderer::{DisplayConfig, DrawFlat, Pipeline, PosNormTex, RenderBundle, Stage},
     utils::application_root_dir,
 };
+use amethyst_gltf::{GltfSceneLoaderSystem};
 
 fn main() -> amethyst::Result<()> {
     amethyst::start_logger(Default::default());
@@ -27,7 +28,12 @@ fn main() -> amethyst::Result<()> {
     );
 
     let game_data = GameDataBuilder::default()
-        .with(PrefabLoaderSystem::<MyPrefabData>::default(), "", &[])
+        .with(PrefabLoaderSystem::<MyPrefabData>::default(), "scene_loader", &[])
+        .with(
+            GltfSceneLoaderSystem::default(),
+            "gltf_loader",
+            &["scene_loader"], // This is important so that entity instantiation is performed in a single frame.
+        )
         .with_bundle(InputBundle::<String, String>::new())?
         .with_bundle(TransformBundle::new())?
         .with_bundle(RenderBundle::new(pipe, Some(config)))?;

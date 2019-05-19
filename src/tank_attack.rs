@@ -1,9 +1,10 @@
+use amethyst_gltf::GltfSceneFormat;
 use amethyst::utils::scene::BasicScenePrefab;
 use amethyst::{
-    assets::{Loader, PrefabLoader, ProgressCounter, RonFormat},
+    assets::{Loader},
     core::{nalgebra::Vector3, Transform},
     prelude::*,
-    renderer::{Camera, Material, MaterialDefaults, ObjFormat, PosNormTex, Projection},
+    renderer::{Camera, PosNormTex, Projection},
 };
 
 pub struct TankAttack;
@@ -60,34 +61,36 @@ fn initialise_camera(world: &mut World) {
 }
 
 fn initialize_tank(world: &mut World) {
-    let mut progress = ProgressCounter::default();
+    // let mut progress = ProgressCounter::default();
 
-    let (tank, mtl) = {
-        let mat_defaults = world.read_resource::<MaterialDefaults>();
+    // let (tank, mtl) = {
+    //     let mat_defaults = world.read_resource::<MaterialDefaults>();
+    //     let loader = world.read_resource::<Loader>();
+
+    //     let mesh_storage = world.read_resource();
+    //     let textures = &world.read_resource();
+
+    //     let tank = loader.load(
+    //         "assets/turret3.obj",
+    //         ObjFormat,
+    //         (),
+    //         &mut progress,
+    //         &mesh_storage,
+    //     );
+    //     // let albedo = loader.load_from_data([0.5, 0.5, 0.5, 0.5].into(), (), textures);
+    //     let mat = Material {
+    //         textures,
+    //         ..mat_defaults.0.clone()
+    //     };
+
+    //     (tank, mat)
+    // };
+
+    let asset = {
         let loader = world.read_resource::<Loader>();
-
-        let mesh_storage = world.read_resource();
-        let textures = &world.read_resource();
-
-        let tank = loader.load(
-            "assets/turret3.obj",
-            ObjFormat,
-            (),
-            &mut progress,
-            &mesh_storage,
-        );
-        // let albedo = loader.load_from_data([0.5, 0.5, 0.5, 0.5].into(), (), textures);
-        let mat = Material {
-            textures,
-            ..mat_defaults.0.clone()
-        };
-
-        (tank, mat)
+        loader.load("assets/turret3.gltf", GltfSceneFormat, Default::default(), (), &world.read_resource())
     };
 
-    let prefab_handle = world.exec(|loader: PrefabLoader<MyPrefabData>| {
-        loader.load("resources/prefab.ron", RonFormat, (), ())
-    });
 
     let mut trans = Transform::default();
     trans.set_xyz(0.0, 0.0, 0.0);
@@ -96,8 +99,6 @@ fn initialize_tank(world: &mut World) {
     world
         .create_entity()
         .with(trans)
-        .with(tank)
-        .with(mtl)
-        .with(prefab_handle)
+        .with(asset)
         .build();
 }
