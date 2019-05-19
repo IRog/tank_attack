@@ -1,46 +1,18 @@
-use amethyst_gltf::GltfSceneFormat;
-use amethyst::utils::scene::BasicScenePrefab;
+use amethyst_gltf::{GltfSceneFormat, GltfSceneOptions};
+
 use amethyst::{
-    assets::{Loader},
+    assets::{Loader, ProgressCounter},
     core::{nalgebra::Vector3, Transform},
     prelude::*,
-    renderer::{Camera, PosNormTex, Projection},
+    renderer::{Camera, Projection},
 };
 
 pub struct TankAttack;
 
-pub type MyPrefabData = BasicScenePrefab<Vec<PosNormTex>>;
-
-// #[derive(PartialEq, Eq)]
-// pub enum Side {
-//     Left,
-//     Right,
-// }
-
-// pub struct Paddle {
-//     pub side: Side,
-//     pub width: f32,
-//     pub height: f32,
-// }
-
-// impl Paddle {
-//     fn new(side: Side) -> Paddle {
-//         Paddle {
-//             side,
-//             width: PADDLE_WIDTH,
-//             height: PADDLE_HEIGHT,
-//         }
-//     }
-// }
-
-// impl Component for Paddle {
-//     type Storage = DenseVecStorage<Self>;
-// }
-
 impl SimpleState for TankAttack {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let StateData { world, .. } = data;
-        // world.add_resource(0usize);
+        world.add_resource(0usize);
 
         initialise_camera(world);
         initialize_tank(world);
@@ -61,34 +33,12 @@ fn initialise_camera(world: &mut World) {
 }
 
 fn initialize_tank(world: &mut World) {
-    // let mut progress = ProgressCounter::default();
-
-    // let (tank, mtl) = {
-    //     let mat_defaults = world.read_resource::<MaterialDefaults>();
-    //     let loader = world.read_resource::<Loader>();
-
-    //     let mesh_storage = world.read_resource();
-    //     let textures = &world.read_resource();
-
-    //     let tank = loader.load(
-    //         "assets/turret3.obj",
-    //         ObjFormat,
-    //         (),
-    //         &mut progress,
-    //         &mesh_storage,
-    //     );
-    //     // let albedo = loader.load_from_data([0.5, 0.5, 0.5, 0.5].into(), (), textures);
-    //     let mat = Material {
-    //         textures,
-    //         ..mat_defaults.0.clone()
-    //     };
-
-    //     (tank, mat)
-    // };
-
     let asset = {
         let loader = world.read_resource::<Loader>();
-        loader.load("assets/turret3.gltf", GltfSceneFormat, Default::default(), (), &world.read_resource())
+        let mut progress = ProgressCounter::default();
+        let mesh_storage = world.read_resource();
+
+        loader.load("assets/puffy.gltf", GltfSceneFormat, GltfSceneOptions::default(), &mut progress, &mesh_storage)
     };
 
 

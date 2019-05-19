@@ -1,7 +1,0 @@
-(
-  axes: {
-    "move_tank": Emulated(pos: Key(W), neg: Key(S)),
-    "rotate_sideways": Emulated(pos: Key(A), neg: Key(D)),
-  },
-  actions: {},
-)
