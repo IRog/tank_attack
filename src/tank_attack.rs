@@ -8,33 +8,28 @@ use amethyst::ecs::prelude::{Component, DenseVecStorage};
 use amethyst::utils::scene::BasicScenePrefab;
 use amethyst_gltf::{GltfSceneFormat, GltfSceneOptions};
 
-pub struct TankAttack;
-
 pub type MyPrefabData = BasicScenePrefab<Vec<PosNormTex>>;
-
-// #[derive(PartialEq, Eq)]
-// pub enum Side {
-//     Left,
-//     Right,
-// }
-
-pub struct Tank {
-    // pub side: Side,
-    // pub width: f32,
-    // pub height: f32,
-}
+pub struct TankAttack;
+pub struct Tank {}
+pub struct TankCamera {}
 
 impl Tank {
     fn new() -> Tank {
-        Tank {
-            // side,
-            // width: PADDLE_WIDTH,
-            // height: PADDLE_HEIGHT,
-        }
+        Tank {}
+    }
+}
+
+impl TankCamera {
+    fn new () -> TankCamera {
+        TankCamera {}
     }
 }
 
 impl Component for Tank {
+    type Storage = DenseVecStorage<Self>;
+}
+
+impl Component for TankCamera {
     type Storage = DenseVecStorage<Self>;
 }
 
@@ -50,12 +45,12 @@ impl SimpleState for TankAttack {
 fn initialise_camera(world: &mut World) {
     let mut transform = Transform::default();
     transform.set_xyz(0.0, 7.0, -5.0);
-    transform.rotate_global(Vector3::x_axis(), 0.67 * -1.0);
     transform.rotate_global(Vector3::y_axis(), 3.14159);
 
     world
         .create_entity()
         .with(Camera::from(Projection::perspective(1.309, 2.0)))
+        .with(TankCamera::new())
         .with(transform)
         .build();
 }

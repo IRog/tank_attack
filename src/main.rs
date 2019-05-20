@@ -36,7 +36,7 @@ fn main() -> amethyst::Result<()> {
             &["scene_loader"], // This is important so that entity instantiation is performed in a single frame.
         )
         .with_bundle(input_bundle)?
-        .with(systems::TankSystem, "tank_system", &["input_system"])
+        .with(systems::MovementSystem, "movement_system", &["input_system"])
         .with_bundle(TransformBundle::new())?
         .with_bundle(RenderBundle::new(pipe, Some(config)))?;
 
