@@ -1,12 +1,12 @@
 use crate::tank_attack::{Tank, TankCamera};
-use amethyst::core::{nalgebra::Vector3, Transform};
+use amethyst::core::{Transform};
 use amethyst::ecs::{Join, Read, ReadStorage, System, WriteStorage};
 use amethyst::input::InputHandler;
 
 pub struct MovementSystem;
 
-pub const MOVEMENT_SCALAR: f32 = 1.4;
-pub const ROTATION_SCALAR: f32 = 0.25;
+pub const MOVEMENT_SCALAR: f32 = 0.50;
+pub const ROTATION_SCALAR: f32 = 0.10;
 
 impl<'s> System<'s> for MovementSystem {
     type SystemData = (
@@ -21,12 +21,15 @@ impl<'s> System<'s> for MovementSystem {
         let movement = input.axis_value("move_tank").unwrap();
 
         for (_, transform) in (&tank, &mut transforms).join() {
-            transform.rotate_local(Vector3::y_axis(), rotation as f32 * ROTATION_SCALAR);
+            transform.yaw_global(rotation as f32 * ROTATION_SCALAR);
             transform.move_backward(movement as f32 * MOVEMENT_SCALAR);
         }
 
         for (_, transform) in (&camera, &mut transforms).join() {
-            transform.rotate_local(Vector3::y_axis(), rotation as f32 * ROTATION_SCALAR);
+            if rotation != 0.0 {
+                transform.yaw_local(rotation as f32 * ROTATION_SCALAR * 0.5);
+                transform.move_right(rotation as f32 * 0.25);
+            }
             transform.move_forward(movement as f32 * MOVEMENT_SCALAR);
         }
     }
