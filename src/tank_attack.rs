@@ -1,11 +1,12 @@
-use amethyst::utils::scene::BasicScenePrefab;
-use amethyst_gltf::{GltfSceneFormat, GltfSceneOptions};
 use amethyst::{
     assets::{Loader, PrefabLoader, ProgressCounter, RonFormat},
     core::{nalgebra::Vector3, Transform},
     prelude::*,
     renderer::{Camera, PosNormTex, Projection},
 };
+use amethyst::ecs::prelude::{Component, DenseVecStorage};
+use amethyst::utils::scene::BasicScenePrefab;
+use amethyst_gltf::{GltfSceneFormat, GltfSceneOptions};
 
 pub struct TankAttack;
 
@@ -17,25 +18,25 @@ pub type MyPrefabData = BasicScenePrefab<Vec<PosNormTex>>;
 //     Right,
 // }
 
-// pub struct Paddle {
-//     pub side: Side,
-//     pub width: f32,
-//     pub height: f32,
-// }
+pub struct Tank {
+    // pub side: Side,
+    // pub width: f32,
+    // pub height: f32,
+}
 
-// impl Paddle {
-//     fn new(side: Side) -> Paddle {
-//         Paddle {
-//             side,
-//             width: PADDLE_WIDTH,
-//             height: PADDLE_HEIGHT,
-//         }
-//     }
-// }
+impl Tank {
+    fn new() -> Tank {
+        Tank {
+            // side,
+            // width: PADDLE_WIDTH,
+            // height: PADDLE_HEIGHT,
+        }
+    }
+}
 
-// impl Component for Paddle {
-//     type Storage = DenseVecStorage<Self>;
-// }
+impl Component for Tank {
+    type Storage = DenseVecStorage<Self>;
+}
 
 impl SimpleState for TankAttack {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
@@ -81,5 +82,6 @@ fn initialize_tank(world: &mut World) {
         .with(trans)
         .with(asset)
         .with(prefab_handle)
+        .with(Tank::new())
         .build();
 }

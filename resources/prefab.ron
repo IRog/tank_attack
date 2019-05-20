@@ -5,11 +5,11 @@ Prefab (
         (
             data: (
                 light: (
-                    ambient_color: (Rgba(1.0, 1.0, 1.0, 1.0)),
+                    ambient_color: (Rgba(1.0, 0.9647, 0.902, 1.0)),
                     light: Point((
-                        intensity: 10.0,
-                        color: (1.0, 1.0, 1.0, 1.0),
-                        radius: 100.0,
+                        intensity: 1.0,
+                        color: (1.0, 0.9647, 0.902, 1.0),
+                        radius: 40.0,
                     )),
                 ),
             ),

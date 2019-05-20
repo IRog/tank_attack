@@ -1,36 +1,26 @@
-// use amethyst::core::Transform;
-// use amethyst::ecs::{Join, Read, ReadStorage, System, WriteStorage};
-// use amethyst::input::InputHandler;
+use crate::tank_attack::Tank;
+use amethyst::core::{nalgebra::Vector3, Transform};
+use amethyst::ecs::{Join, Read, ReadStorage, System, WriteStorage};
+use amethyst::input::InputHandler;
 
-// use crate::pong::{Paddle, Side, ARENA_HEIGHT, PADDLE_HEIGHT};
+pub struct TankSystem;
 
-// pub struct TankSystem;
+pub const MOVEMENT_SCALAR: f32 = 1.4;
 
-// pub const MOVEMENT_SCALAR: f32 = 1.4;
+impl<'s> System<'s> for TankSystem {
+    type SystemData = (
+        WriteStorage<'s, Transform>,
+        ReadStorage<'s, Tank>,
+        Read<'s, InputHandler<String, String>>,
+    );
 
-// impl<'s> System<'s> for TankSystem {
-//     type SystemData = (
-//         WriteStorage<'s, Transform>,
-//         ReadStorage<'s, Paddle>,
-//         Read<'s, InputHandler<String, String>>,
-//     );
+    fn run(&mut self, (mut transforms, tank, input): Self::SystemData) {
+        let rotation = input.axis_value("rotate_sideways").unwrap();
+        let movement = input.axis_value("move_tank").unwrap();
 
-//     fn run(&mut self, (mut transforms, paddles, input): Self::SystemData) {
-//         for (paddle, transform) in (&paddles, &mut transforms).join() {
-//             let movement = match paddle.side {
-//                 Side::Left => input.axis_value("left_paddle"),
-//                 Side::Right => input.axis_value("right_paddle"),
-//             };
-
-//             if let Some(mv_amount) = movement {
-//                 let scaled_amount = MOVEMENT_SCALAR * mv_amount as f32;
-//                 let paddle_y = transform.translation().y;
-//                 transform.set_y(
-//                     (paddle_y + scaled_amount)
-//                         .min(ARENA_HEIGHT - PADDLE_HEIGHT * 0.5)
-//                         .max(PADDLE_HEIGHT * 0.5),
-//                 );
-//             }
-//         }
-//     }
-// }
+        for (_, transform) in (&tank, &mut transforms).join() {
+            transform.rotate_local(Vector3::y_axis(), rotation as f32 * 0.25);
+            transform.move_backward(movement as f32 * MOVEMENT_SCALAR);
+        }
+    }
+}
