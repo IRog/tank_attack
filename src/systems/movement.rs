@@ -6,7 +6,7 @@ use amethyst::input::InputHandler;
 pub struct MovementSystem;
 
 pub const MOVEMENT_SCALAR: f32 = 0.50;
-pub const ROTATION_SCALAR: f32 = 0.08;
+pub const ROTATION_SCALAR: f32 = 0.10;
 
 impl<'s> System<'s> for MovementSystem {
     type SystemData = (
