@@ -1,8 +1,8 @@
 use amethyst::{
-    assets::{Loader, PrefabLoader, ProgressCounter, RonFormat},
+    assets::{AssetStorage, Loader, PrefabLoader, ProgressCounter, RonFormat},
     core::{nalgebra::Vector3, Transform},
     prelude::*,
-    renderer::{Camera, PosNormTex, Projection},
+    renderer::{Camera, PngFormat, PosNormTex, Projection, Texture, TextureMetadata},
 };
 use amethyst::ecs::prelude::{Component, DenseVecStorage};
 use amethyst::utils::scene::BasicScenePrefab;
@@ -36,7 +36,7 @@ impl Component for TankCamera {
 impl SimpleState for TankAttack {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let StateData { world, .. } = data;
-
+        initialize_image(world);
         initialise_camera(world);
         initialize_tank(world);
     }
@@ -78,5 +78,28 @@ fn initialize_tank(world: &mut World) {
         .with(asset)
         .with(prefab_handle)
         .with(Tank::new())
+        .build();
+}
+
+fn initialize_image(world: &mut World) {
+    let texture_handle = {
+        let loader = world.read_resource::<Loader>();
+        loader.load(
+            "assets/metal.png",
+            PngFormat,
+            TextureMetadata::srgb(),
+            (),
+            &world.read_resource::<AssetStorage<Texture>>(),
+        )
+    };
+
+    let mut transform = Transform::default();
+    transform.set_xyz(0.0, 0.0, 0.0);
+    // transform.rotate_global(Vector3::y_axis(), 90.0_f32.to_radians());
+
+    world
+        .create_entity()
+        .with(transform)
+        .with(texture_handle)
         .build();
 }

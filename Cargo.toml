@@ -5,5 +5,7 @@ authors = []
 edition = "2018"
 
 [dependencies]
+# amethyst = {version = "0.10.0", features = ["nightly"]}
 amethyst = "0.10.0"
 amethyst_gltf = "0.5.0"
+
