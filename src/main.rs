@@ -9,7 +9,7 @@ use amethyst::{
     core::TransformBundle,
     input::InputBundle,
     prelude::*,
-    renderer::{DisplayConfig, DrawFlat2D, DrawShadedSeparate, DrawSkybox, Pipeline, RenderBundle, Stage},
+    renderer::{DisplayConfig, DrawShadedSeparate, DrawSkybox, Pipeline, RenderBundle, Stage},
 };
 use amethyst_gltf::{GltfSceneLoaderSystem};
 use std::path::Path;
@@ -25,7 +25,6 @@ fn main() -> amethyst::Result<()> {
     let pipe = Pipeline::build().with_stage(
         Stage::with_backbuffer()
             .clear_target([0.0, 0.0, 0.0, 1.0], 1.0)
-            .with_pass(DrawFlat2D::new())
             .with_pass(DrawShadedSeparate::new())
             .with_pass(DrawSkybox::new()),
     );

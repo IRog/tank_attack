@@ -5,8 +5,8 @@ use amethyst::input::InputHandler;
 
 pub struct MovementSystem;
 
-pub const MOVEMENT_SCALAR: f32 = 0.50;
-pub const ROTATION_SCALAR: f32 = 0.10;
+pub const MOVEMENT_SCALAR: f32 = 0.60;
+pub const ROTATION_SCALAR: f32 = 0.08;
 
 impl<'s> System<'s> for MovementSystem {
     type SystemData = (
@@ -28,11 +28,11 @@ impl<'s> System<'s> for MovementSystem {
         }
 
         for (_, transform) in (&camera, &mut transforms).join() {
+            let offset_movement = movement as f32 * MOVEMENT_SCALAR - 5.0;
             transform.yaw_global(rotation as f32 * ROTATION_SCALAR);
             transform.set_x(tank_translation.x as f32);
             transform.set_z(tank_translation.z as f32);
-            transform.move_backward(5.0);
-            transform.move_forward(movement as f32 * MOVEMENT_SCALAR);
+            transform.move_forward(offset_movement);
         }
     }
 }
