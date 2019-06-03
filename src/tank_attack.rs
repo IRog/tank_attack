@@ -97,7 +97,6 @@ fn initialize_ground(world: &mut World) {
 
     let mut transform = Transform::default();
     transform.set_xyz(0.0, 0.0, 0.0);
-    transform.set_scale(1.0, 1.0, 1.0);
 
     world
         .create_entity()
