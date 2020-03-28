@@ -1,45 +1,60 @@
 extern crate amethyst;
-mod tank_attack;
+
 mod systems;
+mod tank_attack;
 
 use crate::tank_attack::MyPrefabData;
 use crate::tank_attack::TankAttack;
 use amethyst::{
-    assets::PrefabLoaderSystem,
+    assets::PrefabLoaderSystemDesc,
     core::TransformBundle,
-    input::InputBundle,
+    input::{InputBundle, StringBindings},
     prelude::*,
-    renderer::{DisplayConfig, DrawShadedSeparate, DrawSkybox, Pipeline, RenderBundle, Stage},
+    renderer::{
+        palette::Srgb,
+        plugins::{RenderShaded3D, RenderSkybox, RenderToWindow},
+        types::DefaultBackend,
+        RenderingBundle,
+    },
 };
-use amethyst_gltf::{GltfSceneLoaderSystem};
+use amethyst_gltf::GltfSceneLoaderSystemDesc;
 use std::path::Path;
 
 fn main() -> amethyst::Result<()> {
     amethyst::start_logger(Default::default());
 
-    let path = Path::new("./resources/display_config.ron");
-    let config = DisplayConfig::load(&path);
+    let display_config_path = Path::new("./resources/display_config.ron");
     let bindings_path = Path::new("./resources/input.ron");
-    let input_bundle = InputBundle::<String, String>::new().with_bindings_from_file(bindings_path)?;
-
-    let pipe = Pipeline::build().with_stage(
-        Stage::with_backbuffer()
-            .clear_target([0.0, 0.0, 0.0, 1.0], 1.0)
-            .with_pass(DrawShadedSeparate::new())
-            .with_pass(DrawSkybox::new()),
-    );
+    let input_bundle =
+        InputBundle::<StringBindings>::new().with_bindings_from_file(bindings_path)?;
 
     let game_data = GameDataBuilder::default()
-        .with(PrefabLoaderSystem::<MyPrefabData>::default(), "scene_loader", &[])
-        .with(
-            GltfSceneLoaderSystem::default(),
-            "",
+        .with_system_desc(
+            PrefabLoaderSystemDesc::<MyPrefabData>::default(),
+            "scene_loader",
+            &[],
+        )
+        .with_system_desc(
+            GltfSceneLoaderSystemDesc::default(),
+            "gltf_loader",
             &["scene_loader"], // This is important so that entity instantiation is performed in a single frame.
         )
         .with_bundle(input_bundle)?
-        .with(systems::MovementSystem, "movement_system", &["input_system"])
+        .with(
+            systems::MovementSystem,
+            "movement_system",
+            &["input_system"],
+        )
         .with_bundle(TransformBundle::new())?
-        .with_bundle(RenderBundle::new(pipe, Some(config)))?;
+        .with_bundle(
+            RenderingBundle::<DefaultBackend>::new()
+                .with_plugin(RenderToWindow::from_config_path(display_config_path)?)
+                .with_plugin(RenderShaded3D::default())
+                .with_plugin(RenderSkybox::with_colors(
+                    Srgb::new(0.82, 0.51, 0.50),
+                    Srgb::new(0.18, 0.11, 0.85),
+                )),
+        )?;
 
     let mut game = Application::new("./", TankAttack, game_data)?;
 

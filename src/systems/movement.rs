@@ -1,8 +1,7 @@
 use crate::tank_attack::{Tank, TankCamera};
-use amethyst::core::{nalgebra::Vector3, Transform};
+use amethyst::core::{math::Vector3, Transform};
 use amethyst::ecs::{Join, Read, ReadStorage, System, WriteStorage};
-use amethyst::input::InputHandler;
-
+use amethyst::input::{InputHandler, StringBindings};
 pub struct MovementSystem;
 
 pub const MOVEMENT_SCALAR: f32 = 0.60;
@@ -13,7 +12,7 @@ impl<'s> System<'s> for MovementSystem {
         WriteStorage<'s, Transform>,
         ReadStorage<'s, Tank>,
         ReadStorage<'s, TankCamera>,
-        Read<'s, InputHandler<String, String>>,
+        Read<'s, InputHandler<StringBindings>>,
     );
 
     fn run(&mut self, (mut transforms, tank, camera, input): Self::SystemData) {
@@ -22,16 +21,16 @@ impl<'s> System<'s> for MovementSystem {
         let mut tank_translation = Vector3::new(0.0, 0.0, 0.0);
 
         for (_, transform) in (&tank, &mut transforms).join() {
-            transform.yaw_global(rotation as f32 * ROTATION_SCALAR);
+            transform.prepend_rotation_y_axis(rotation as f32 * ROTATION_SCALAR);
             transform.move_backward(movement as f32 * MOVEMENT_SCALAR);
             tank_translation = *transform.translation();
         }
 
         for (_, transform) in (&camera, &mut transforms).join() {
             let offset_movement = movement as f32 * MOVEMENT_SCALAR - 5.0;
-            transform.yaw_global(rotation as f32 * ROTATION_SCALAR);
-            transform.set_x(tank_translation.x as f32);
-            transform.set_z(tank_translation.z as f32);
+            transform.prepend_rotation_y_axis(rotation as f32 * ROTATION_SCALAR);
+            transform.set_translation_x(tank_translation.x as f32);
+            transform.set_translation_z(tank_translation.z as f32);
             transform.move_forward(offset_movement);
         }
     }
