@@ -1,11 +1,13 @@
 [package]
 name = "tank_attack"
-version = "0.1.0"
+version = "0.2.0"
 authors = []
 edition = "2018"
 
 [dependencies]
-# amethyst = {version = "0.10.0", features = ["nightly"]}
-amethyst = "0.15.0"
 amethyst_gltf = "0.10.0"
 
+[dependencies.amethyst]
+version = "0.15"
+features = ["metal"]
+# amethyst = {version = "0.10.0", features = ["nightly"]}

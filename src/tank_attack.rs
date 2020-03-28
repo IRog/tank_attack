@@ -1,7 +1,7 @@
 use amethyst::ecs::prelude::{Component, DenseVecStorage};
 use amethyst::utils::scene::BasicScenePrefab;
 use amethyst::{
-    assets::{Loader, PrefabLoader, ProgressCounter, RonFormat},
+    assets::{Handle, Loader, PrefabLoader, ProgressCounter, RonFormat},
     core::{math::Vector3, Transform},
     prelude::*,
     renderer::{
@@ -9,7 +9,7 @@ use amethyst::{
         rendy::mesh::PosNormTex,
     },
 };
-use amethyst_gltf::{GltfSceneFormat, GltfSceneOptions};
+use amethyst_gltf::{GltfSceneAsset, GltfSceneFormat, GltfSceneOptions};
 
 pub type MyPrefabData = BasicScenePrefab<Vec<PosNormTex>>;
 pub struct TankAttack;
@@ -48,29 +48,26 @@ impl SimpleState for TankAttack {
 
 fn initialise_camera(world: &mut World) {
     let mut transform = Transform::default();
-    transform.set_translation_xyz(0.0, 7.0, -5.0);
+    transform.set_translation_xyz(0.0, 12.0, -5.0);
     transform.prepend_rotation(Vector3::y_axis(), 3.14159);
 
     world
         .create_entity()
-        .with(Camera::from(Projection::perspective(1.0,
-            std::f32::consts::FRAC_PI_3,
-            0.1,
-            1000.0,)))
+        .with(Camera::from(Projection::perspective(1.309, 1.047198, 0.1, 2000.0)))
         .with(TankCamera::new())
         .with(transform)
         .build();
 }
 
 fn initialize_tank(world: &mut World) {
-    let asset = {
+    let asset: Handle<GltfSceneAsset> = {
         let loader = world.read_resource::<Loader>();
         let mut progress = ProgressCounter::default();
         let mesh_storage = world.read_resource();
 
         loader.load(
             "assets/turret3.glb",
-            GltfSceneFormat,
+            GltfSceneFormat(GltfSceneOptions::default()),
             &mut progress,
             &mesh_storage,
         )
@@ -88,20 +85,21 @@ fn initialize_tank(world: &mut World) {
 
     world
         .create_entity()
-        .with(transform)
+        .with(asset)
         .with(Tank::new())
+        .with(transform)
         .build();
 }
 
 fn initialize_ground(world: &mut World) {
-    let ground = {
+    let ground: Handle<GltfSceneAsset> = {
         let loader = world.read_resource::<Loader>();
         let mut progress = ProgressCounter::default();
         let mesh_storage = world.read_resource();
 
         loader.load(
             "assets/hex_tile.glb",
-            GltfSceneFormat,
+            GltfSceneFormat(GltfSceneOptions::default()),
             &mut progress,
             &mesh_storage,
         )

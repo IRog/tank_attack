@@ -1,14 +1,21 @@
 #![enable(implicit_some)]
 
+/*!
+
+    @import /amethyst_assets/src/prefab/mod.rs#Prefab
+    @import ../../gltf/main.rs#ScenePrefabData
+    Prefab<ScenePrefabData>
+*/
+
 Prefab (
     entities: [
         (
             data: (
                 light: (
-                    ambient_color: (Rgba(1.0, 0.9647, 0.902, 1.0)),
+                    ambient_color: (Srgba(1.0, 0.9647, 0.902, 1.0)),
                     light: Point((
                         intensity: 1.0,
-                        color: (1.0, 0.9647, 0.902, 1.0),
+                        color: (1.0, 0.9647, 0.902),
                         radius: 40.0,
                     )),
                 ),
